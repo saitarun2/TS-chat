@@ -3,6 +3,7 @@ package com.hooks.pingme.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+
 @Entity
 public class Message {
     public Message() {
