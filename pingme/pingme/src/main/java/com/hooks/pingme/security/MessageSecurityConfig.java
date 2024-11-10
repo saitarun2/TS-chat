@@ -19,9 +19,9 @@ public class MessageSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception{
 
         return security.csrf(customize-> customize.disable())
-                .authorizeHttpRequests(request-> request.anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request.anyRequest().permitAll()).build();
 //                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults()).build();
+//                .httpBasic(Customizer.withDefaults()).build();
 
 
     }

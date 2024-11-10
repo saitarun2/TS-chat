@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
 
 function Loggedin() {
   return (
-    <div>Loggedin</div>
-  )
+    <div>
+      <h1>Logged In correctly</h1>
+    </div>
+  );
 }
 
-export default Loggedin
+export default Loggedin;

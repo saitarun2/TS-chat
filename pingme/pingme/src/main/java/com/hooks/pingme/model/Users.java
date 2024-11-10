@@ -2,6 +2,7 @@ package com.hooks.pingme.model;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class Users{
 
     @Id
+    @GeneratedValue
     int id;
     String username;
     String password;
