@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="EN">
+
+<head>
+    <title>PingMe</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        window.onload = () => {
+            connect();
+        }
+
+        var stompClient = null;
+
+        var connect = () => {
+            var socket = new SockJS("http://localhost:8080/ws");
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (data) {
+                stompClient.subscribe("/topic/public", function (message) {
+                    console.log("in subscription");
+                    showMessage(JSON.parse(message.body));
+                });
+            });
+        }
+
+        var showMessage = (message) => {
+            console.log("Show message called");
+            var element = document.createElement("li");
+            var msg = message.fromUser + ": " + message.messageText;
+            element.append(msg);
+            document.getElementById("listOfMessages").append(element);
+        }
+
+        var sendMessage = () => {
+<!--            event.preventDefault(); // Prevent form submission from refreshing the page-->
+
+            var messageId = 1;
+            var messageText = document.getElementById("message").value;
+            var toUser = "All";
+            var fromUser = document.getElementById("name").value;
+
+            var data = {
+                messageId: messageId,
+                messageText: messageText,
+                toUser: toUser,
+                fromUser: fromUser
+            }
+
+            console.log(data);
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(data));
+        }
+    </script>
+</head>
+
+<body>
+<form>
+    <input type="text" id="name" placeholder="Enter your name">
+    <input type="text" id="message" placeholder="Enter your message">
+    <button onclick="sendMessage()">Send</button>
+</form>
+
+<div>
+    <ol id="listOfMessages"></ol>
+</div>
+</body>
+</html>

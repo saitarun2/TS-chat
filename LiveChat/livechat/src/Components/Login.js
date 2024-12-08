@@ -11,7 +11,6 @@ function Login() {
   let [data, setData] = useState([]);
   // State for handling loading state
   let [loading, setLoading] = useState(true);
-  let authHeader = 'Basic ' + "dXNlcjphOGVlOWE3Mi02NDM2LTRkMTQtYWJjMC1mNzliNTY0YzlkYTc=";
 
 
   console.log(data);
@@ -21,11 +20,7 @@ function Login() {
   // Fetch data when the component mounts
   useEffect(() => {
     // Use Axios to make a GET request
-    axios.get('http://localhost:8080/api/sample', {
-      // headers: {
-      //   'Authorization':  authHeader ,
-      // }
-    })  // Example API
+    axios.post('http://localhost:8080/api/login')  // Example API
       .then((response) => {
         setData(response.data);// Store data in state
         setLoading(false);  // Set loading to false after data is fetched
@@ -35,9 +30,6 @@ function Login() {
         setLoading(false);  // Set loading to false if there is an error
       });
   }, []); 
-
-
-
 
   let checkLoginDetails = (e) => {
     if (password.length > 3) {
