@@ -31,7 +31,7 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
-          cache-dependency-path: ts720/pom.xml
+          cache-dependency-path: TS-chat/pom.xml
 
       - name: Make Maven wrapper executable
         run: chmod +x ./mvnw
