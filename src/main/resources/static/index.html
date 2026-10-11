@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PingMe - Realtime Chat</title>
+    <!-- SockJS and STOMP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 80vh;
+        }
+
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .status-badge.connected {
+            background-color: #10b981;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            list-style-type: none;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #f9fafb;
+        }
+
+        .chat-messages li {
+            padding: 10px 14px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            word-break: break-word;
+        }
+
+        .chat-messages li strong {
+            color: var(--primary-color);
+            margin-right: 6px;
+        }
+
+        .chat-form {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chat-form input {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-form input:focus {
+            border-color: var(--primary-color);
+        }
+
+        #name {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        #message {
+            flex: 2;
+            min-width: 180px;
+        }
+
+        .chat-form button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-form button:hover {
+            background-color: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <span>PingMe Chat</span>
+        <span id="statusBadge" class="status-badge">Connecting...</span>
+    </div>
+
+    <ul id="listOfMessages" class="chat-messages"></ul>
+
+    <form id="chatForm" class="chat-form">
+        <input type="text" id="name" placeholder="Your name" required>
+        <input type="text" id="message" placeholder="Type a message..." required autocomplete="off">
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+        const socket = new SockJS("/ws");
+        stompClient = Stomp.over(socket);
+
+        // Disable debug logging for production cleanliness (optional)
+        stompClient.debug = null;
+
+        stompClient.connect({}, function (frame) {
+            updateConnectionStatus(true);
+            stompClient.subscribe("/topic/public", function (message) {
+                showMessage(JSON.parse(message.body));
+            });
+        }, function (error) {
+            updateConnectionStatus(false);
+            console.error("STOMP error: ", error);
+            // Try to reconnect after 5 seconds
+            setTimeout(connect, 5000);
+        });
+    }
+
+    function updateConnectionStatus(isConnected) {
+        const badge = document.getElementById("statusBadge");
+        if (isConnected) {
+            badge.textContent = "Connected";
+            badge.classList.add("connected");
+        } else {
+            badge.textContent = "Disconnected";
+            badge.classList.remove("connected");
+        }
+    }
+
+    function showMessage(message) {
+        const messageList = document.getElementById("listOfMessages");
+        const element = document.createElement("li");
+
+        const senderElement = document.createElement("strong");
+        // CHANGED: Using message.sender to match backend
+        senderElement.textContent = message.sender + ":";
+
+        // CHANGED: Using message.content to match backend
+        const text = document.createTextNode(" " + message.content);
+
+        element.appendChild(senderElement);
+        element.appendChild(text);
+        messageList.appendChild(element);
+
+        // Auto-scroll to the latest message
+        messageList.scrollTop = messageList.scrollHeight;
+    }
+
+    function sendMessage(event) {
+        event.preventDefault(); // Prevents page reload
+
+        const messageContent = document.getElementById("message").value.trim();
+        const messageSender = document.getElementById("name").value.trim();
+
+        if (!messageContent || !messageSender) return;
+
+        // CHANGED: Updated JSON keys to perfectly match the Message.java POJO
+        const data = {
+            id: Date.now().toString(),
+            content: messageContent,
+            sender: messageSender
+        };
+
+        if (stompClient && stompClient.connected) {
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(data));
+            document.getElementById("message").value = ""; // Clear input field
+        } else {
+            alert("Not connected to the server yet. Please wait.");
+        }
+    }
+
+    // Event Listeners
+    window.onload = () => {
+        connect();
+        document.getElementById("chatForm").addEventListener("submit", sendMessage);
+    };
+</script>
+
+</body>
+</html>
