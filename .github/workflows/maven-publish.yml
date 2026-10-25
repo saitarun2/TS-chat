@@ -1,5 +1,4 @@
 name: TS-chat CI
-
 on:
   push:
     branches: [main]
