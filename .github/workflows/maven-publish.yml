@@ -36,3 +36,10 @@ jobs:
             -Dsonar.projectKey=saitarun2_TS-chat
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
+      - name: owasp maven dependency check
+        run: |
+          .\mvnw.cmd org.owasp:dependency-check-maven:13.0.0:check  "-DnvdApiKeyEnvironmentVariable=NVD_API_KEY"
+        env:
+          NVD_API_KEY: ${{secrets.NVD_API_KEY}}
+      
