@@ -1,0 +1,9 @@
+PingMe project structure
+- Spring Boot application (Java 17)
+- REST register/login API
+- BCrypt password hashing for demo accounts
+- Native WebSocket chat endpoint (/ws/chat)
+- Responsive single-page UI in src/main/resources/static/index.html
+- Maven wrapper
+- Dockerfile and .dockerignore
+- GitHub Actions CI workflow (build/test, optional Sonar + OWASP secrets, Docker build)

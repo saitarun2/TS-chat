@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a12">
+  <title>PingMe — your people, in real time</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    :root{--bg:#090a12;--panel:rgba(20,22,39,.78);--line:rgba(255,255,255,.1);--text:#f6f7ff;--muted:#969bb6;--purple:#9b7bff;--cyan:#64e8ff;--pink:#ff78b7;--green:#6df0bd}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 5%,#29204b 0,transparent 35%),radial-gradient(ellipse at 90% 85%,#102d42 0,transparent 32%),var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:radial-gradient(#a6a6d9 .7px,transparent .7px);background-size:24px 24px;mask-image:linear-gradient(to bottom,#000,transparent 80%)}
+    button,input{font:inherit}button{cursor:pointer}.shell{width:min(1180px,calc(100% - 36px));margin:auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+    header{display:flex;align-items:center;justify-content:space-between;padding:28px 0}.brand{display:flex;gap:12px;align-items:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.7px}.logo{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),#6a9dff 60%,var(--cyan));box-shadow:0 8px 30px #8d73ff50;color:#101020;font-size:21px}.brand span{color:var(--cyan)}.top-pill{border:1px solid var(--line);background:#ffffff08;padding:9px 14px;border-radius:99px;color:#c8cbe0;font-size:12px;display:flex;gap:8px;align-items:center}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+    main{flex:1;display:grid;grid-template-columns:1fr 440px;gap:60px;align-items:center;padding:26px 0 60px}.hero{padding:12px 0 40px}.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #a58aff45;background:#9b7bff12;color:#c6b8ff;padding:8px 12px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}.eyebrow i{font-style:normal;color:var(--pink)}h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(46px,6vw,78px);line-height:.99;letter-spacing:-4.5px;margin:26px 0 22px;max-width:650px}h1 .gradient{background:linear-gradient(100deg,#b4a0ff 5%,#77e6ff 50%,#ff9bcd 95%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{font-size:16px;line-height:1.8;color:var(--muted);max-width:510px}.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}.chip{font-size:12px;color:#c7c9df;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#ffffff06}.chip b{color:var(--cyan);margin-right:5px}
+    .card{border:1px solid #ffffff18;border-radius:28px;background:linear-gradient(145deg,#1b1c30e8,#111421eb);box-shadow:0 30px 100px #0008,inset 0 1px #ffffff0b;backdrop-filter:blur(24px);overflow:hidden;position:relative}.card:before{content:"";position:absolute;top:-130px;right:-100px;width:250px;height:250px;background:#8f75ff22;filter:blur(45px);pointer-events:none}.card-head{padding:25px 26px 18px;display:flex;justify-content:space-between;align-items:center;position:relative}.card-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px}.sub{font-size:12px;color:var(--muted);margin-top:5px}.online{font-size:11px;color:var(--green);background:#6df0bd12;border:1px solid #6df0bd26;padding:7px 10px;border-radius:99px}.tabs{display:flex;margin:0 26px 22px;padding:4px;border-radius:12px;background:#090b15;border:1px solid #ffffff09}.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:11px;border-radius:9px;font-weight:700;font-size:13px}.tab.active{color:white;background:linear-gradient(110deg,#795be8,#626ce5);box-shadow:0 5px 18px #725de83b}.form{padding:0 26px 25px;position:relative}.field{margin-bottom:15px}.field label{display:block;font-size:12px;color:#b8bbd1;font-weight:600;margin-bottom:8px}.input-wrap{position:relative}.field input{width:100%;background:#0b0d18;border:1px solid #ffffff13;border-radius:12px;padding:14px 15px;color:white;outline:none;transition:.2s}.field input:focus{border-color:#9b7bffb0;box-shadow:0 0 0 3px #9b7bff19}.field input::placeholder{color:#606680}.primary{width:100%;border:0;border-radius:12px;padding:14px 18px;font-weight:700;color:#101020;background:linear-gradient(100deg,#b8a6ff,#7de8ff);box-shadow:0 8px 24px #7b8bff24;transition:transform .2s,filter .2s}.primary:hover{transform:translateY(-2px);filter:brightness(1.08)}.hint{font-size:11px;color:#7e849f;text-align:center;margin:14px 0 0;line-height:1.6}.notice{display:none;font-size:12px;padding:11px 12px;border-radius:10px;margin-bottom:14px;line-height:1.5}.notice.show{display:block}.notice.error{background:#ff668f16;color:#ff9eb9;border:1px solid #ff668f32}.notice.success{background:#6df0bd12;color:#88f5c9;border:1px solid #6df0bd28}
+    .chat-view{display:none}.chat-view.visible{display:block}.auth-view.hidden{display:none}.chat-top{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.user-badge{display:flex;align-items:center;gap:11px}.avatar{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#ff9bc9,#a58aff);font-weight:800;color:#171327}.chat-scroll{height:350px;overflow:auto;padding:20px 22px;display:flex;flex-direction:column;gap:14px}.message{max-width:88%;display:flex;flex-direction:column;gap:5px;align-self:flex-start;animation:pop .2s ease}.message.mine{align-self:flex-end;align-items:flex-end}.meta{font-size:11px;color:#9298b3;display:flex;gap:8px}.bubble{padding:11px 14px;border:1px solid #ffffff12;background:#ffffff09;border-radius:4px 16px 16px 16px;color:#e8e9f6;line-height:1.55;overflow-wrap:anywhere;font-size:13px}.mine .bubble{background:linear-gradient(135deg,#7858df,#626ee0);border-color:transparent;border-radius:16px 4px 16px 16px;color:white}.system-note{align-self:center;font-size:11px;color:#9ca2bc;background:#ffffff08;border:1px solid var(--line);padding:7px 11px;border-radius:99px}.composer{padding:17px 20px 20px;border-top:1px solid var(--line)}.compose-row{display:flex;gap:9px}.compose-row input{min-width:0;flex:1;border:1px solid #ffffff13;background:#0b0d18;color:white;border-radius:12px;padding:13px 14px;outline:none}.send{width:46px;border:0;border-radius:12px;background:linear-gradient(135deg,#a992ff,#6ce4ff);font-size:18px}.small-actions{display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:11px;color:#767d98}.text-button{background:none;border:0;color:#b6a5ff;font-size:12px}.foot{display:flex;justify-content:space-between;gap:15px;padding:0 0 24px;color:#737994;font-size:11px}.foot strong{color:#b7bad0;font-weight:600}
+    @keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@media(max-width:900px){main{grid-template-columns:1fr;gap:18px;padding-top:20px}.hero{padding-bottom:10px}h1{font-size:clamp(46px,10vw,68px)}.card{max-width:520px;width:100%;margin:0 auto}.hero p{max-width:620px}}@media(max-width:520px){.shell{width:calc(100% - 24px)}header{padding:18px 0}.top-pill{font-size:10px;padding:8px}.brand{font-size:19px}.logo{width:38px;height:38px}h1{letter-spacing:-2.5px}.card{border-radius:22px}.card-head{padding:22px 20px 16px}.tabs{margin:0 20px 20px}.form{padding:0 20px 22px}.chat-scroll{height:320px;padding:17px}.foot{flex-direction:column;align-items:center;text-align:center}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="brand"><div class="logo">✳</div>ping<span>me</span></div>
+    <div class="top-pill"><span class="dot"></span> REAL-TIME CHAT · LIVE</div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><i>✦</i> YOUR PEOPLE. YOUR MOMENT.</div>
+      <h1>Good chats.<br><span class="gradient">Great energy.</span></h1>
+      <p>A little less scrolling, a lot more connecting. Drop into the room, say what’s on your mind, and let the conversation flow.</p>
+      <div class="chips">
+        <div class="chip"><b>✦</b> Instant messages</div>
+        <div class="chip"><b>◈</b> Made for your crew</div>
+        <div class="chip"><b>↗</b> Always in the moment</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="auth-view" id="authView">
+        <div class="card-head"><div><div class="card-title">Your next favourite chat.</div><div class="sub">Come on in — the conversation's good.</div></div><div class="online">● OPEN</div></div>
+        <div class="tabs"><button class="tab active" id="loginTab" type="button">Sign in</button><button class="tab" id="registerTab" type="button">Create account</button></div>
+        <form class="form" id="authForm">
+          <div class="notice" id="notice" role="status"></div>
+          <div class="field"><label for="username">USERNAME</label><input id="username" autocomplete="username" placeholder="e.g. moonlight" minlength="3" maxlength="24" required></div>
+          <div class="field"><label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" placeholder="At least 8 characters" minlength="8" maxlength="72" required></div>
+          <button class="primary" id="submitAuth" type="submit">Let's get chatting&nbsp; ↗</button>
+          <p class="hint">Your corner of the internet, with good vibes only.<br>Demo accounts are stored in memory and reset when the server restarts.</p>
+        </form>
+      </div>
+      <div class="chat-view" id="chatView">
+        <div class="chat-top"><div class="user-badge"><div class="avatar" id="userAvatar">T</div><div><div class="card-title" id="chatUsername">You're in!</div><div class="sub"><span class="dot" style="display:inline-block;margin-right:5px"></span> Connected to the lounge</div></div></div><button class="text-button" id="logout" type="button">Sign out ↗</button></div>
+        <div class="chat-scroll" id="messages" aria-live="polite"><div class="system-note">The lounge is open. Be the first to say hello ✨</div></div>
+        <form class="composer" id="messageForm"><div class="compose-row"><input id="messageInput" maxlength="1000" placeholder="Send a little good energy…" autocomplete="off" required><button class="send" type="submit" aria-label="Send message">➤</button></div><div class="small-actions"><span>Enter to send · Keep it kind ✨</span><span id="connectionState">Connecting…</span></div></form>
+      </div>
+    </section>
+  </main>
+  <footer class="foot"><span>© <span id="year"></span> <strong>PingMe</strong> · Built for better conversations.</span><span>Small messages. Big energy. ✦</span></footer>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let mode = 'login', username = '', socket = null;
+  $('year').textContent = new Date().getFullYear();
+  const notice = (message, kind='error') => { $('notice').textContent = message; $('notice').className = `notice show ${kind}`; };
+  const clearNotice = () => { $('notice').className = 'notice'; $('notice').textContent = ''; };
+  function setMode(next) {
+    mode = next;
+    $('loginTab').classList.toggle('active', mode === 'login');
+    $('registerTab').classList.toggle('active', mode === 'register');
+    $('submitAuth').textContent = mode === 'login' ? "Let's get chatting ↗" : 'Create my account ✦';
+    $('password').autocomplete = mode === 'login' ? 'current-password' : 'new-password';
+    clearNotice();
+  }
+  $('loginTab').addEventListener('click', () => setMode('login'));
+  $('registerTab').addEventListener('click', () => setMode('register'));
+
+  $('authForm').addEventListener('submit', async event => {
+    event.preventDefault(); clearNotice();
+    const name = $('username').value.trim();
+    const password = $('password').value;
+    if (name.length < 3 || name.length > 24) return notice('Choose a username between 3 and 24 characters.');
+    if (password.length < 8) return notice('Your password needs at least 8 characters.');
+    $('submitAuth').disabled = true; $('submitAuth').textContent = 'One sec…';
+    try {
+      const response = await fetch(`/api/auth/${mode}`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({username:name, password})
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || data.message || 'Something went wrong. Please try again.');
+      username = data.username || name.toLowerCase();
+      $('authView').classList.add('hidden');
+      $('chatView').classList.add('visible');
+      $('chatUsername').textContent = username;
+      $('userAvatar').textContent = username.charAt(0).toUpperCase();
+      connect();
+    } catch (error) { notice(error.message); }
+    finally { $('submitAuth').disabled = false; $('submitAuth').textContent = mode === 'login' ? "Let's get chatting ↗" : 'Create my account ✦'; }
+  });
+
+  function connect() {
+    if (socket && socket.readyState === WebSocket.OPEN) socket.close();
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    socket = new WebSocket(`${protocol}//${location.host}/ws/chat`);
+    $('connectionState').textContent = 'Connecting…';
+    socket.addEventListener('open', () => $('connectionState').textContent = '● Live connection');
+    socket.addEventListener('message', event => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'system') addSystem(data.text);
+        else addMessage(data);
+      } catch (_) { /* Ignore malformed frames. */ }
+    });
+    socket.addEventListener('close', () => $('connectionState').textContent = 'Disconnected · refresh to reconnect');
+    socket.addEventListener('error', () => $('connectionState').textContent = 'Connection issue');
+  }
+  function addSystem(text) {
+    const node = document.createElement('div'); node.className = 'system-note'; node.textContent = text;
+    $('messages').append(node); scrollMessages();
+  }
+  function addMessage(data) {
+    const node = document.createElement('div'); node.className = 'message' + (data.username === username ? ' mine' : '');
+    const meta = document.createElement('div'); meta.className = 'meta';
+    const who = document.createElement('span'); who.textContent = data.username || 'Guest';
+    const time = document.createElement('span'); time.textContent = data.timestamp || '';
+    meta.append(who, time);
+    const bubble = document.createElement('div'); bubble.className = 'bubble'; bubble.textContent = data.text || '';
+    node.append(meta, bubble); $('messages').append(node); scrollMessages();
+  }
+  function scrollMessages() { $('messages').scrollTop = $('messages').scrollHeight; }
+  $('messageForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const input = $('messageInput'), text = input.value.trim();
+    if (!text) return;
+    if (!socket || socket.readyState !== WebSocket.OPEN) { addSystem('Not connected yet. Please wait a moment.'); return; }
+    socket.send(JSON.stringify({username, text})); input.value = ''; input.focus();
+  });
+  $('logout').addEventListener('click', () => {
+    if (socket) socket.close();
+    username = ''; $('messages').replaceChildren();
+    $('chatView').classList.remove('visible'); $('authView').classList.remove('hidden');
+    $('password').value = ''; setMode('login');
+  });
+})();
+</script>
+</body>
+</html>
