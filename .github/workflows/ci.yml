@@ -11,8 +11,14 @@ permissions:
 
 jobs:
   build:
-    name: Build, Test and Analyze
+    name: Build, Test, Analyze and Publish
     runs-on: ubuntu-latest
+
+    # Required for GitHub OIDC authentication with AWS.
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -51,3 +57,30 @@ jobs:
 
       - name: Build Docker image
         run: docker build --tag pingme:${{ github.sha }} .
+
+      # Authenticate and publish only on pushes to master.
+      # Pull requests will not receive AWS credentials.
+      - name: Configure AWS credentials
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-south-1
+          allowed-account-ids: '982880902215'
+
+      - name: Login to Amazon ECR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag Docker image for ECR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          docker tag \
+            pingme:${{ github.sha }} \
+            982880902215.dkr.ecr.ap-south-1.amazonaws.com/ts/chat:${{ github.sha }}
+
+      - name: Push Docker image to Amazon ECR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          docker push \
+            982880902215.dkr.ecr.ap-south-1.amazonaws.com/ts/chat:${{ github.sha }}
